@@ -1,0 +1,1 @@
+aim: product inventory system, shopping cart, checkout system(Stripe API), user authentication
