@@ -1,5 +1,7 @@
 import { registerUser } from "../services/userServices.js";
 import { ApiError } from "../errors/ApiError.js";
+import domains from "../const.js"
+import { findProductsByDomain, getFeaturedProducts } from "../repositories/productRepositories.js";
 
 export const renderHome = (req, res) => {
   res.render("home.ejs");
@@ -15,7 +17,16 @@ export const renderRegister = (req, res) => {
 
 export const renderEcom = async (req, res) => {
     if (req.isAuthenticated()) {
-      res.render('ecommerce.ejs');
+      /*
+      const constants={}
+      for(let i=0; i<domains.length; i++) {
+        constants[`const${i}`]=await findProductsByDomain(domains[i]);
+      }
+      */
+      const products= await getFeaturedProducts();
+      res.render('ecommerce.ejs',{
+        products:products
+      });
     } else {
       res.redirect('/login');
     }
