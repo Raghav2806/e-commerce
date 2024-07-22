@@ -26,11 +26,11 @@
   </button>
 </div>
 
-<section id="product1" class="section-p1">
+<section class="product1 section-p1">
   <h2>Featured Products</h2>
   <p>Summer Collection New Mordern Design</p>
   <div class="pro-container">
-    <% products.forEach(product => { %>
+    <% featured.forEach(product => { %>
     <div class="pro">
       <img src="<%= product.image %>">
       <div class="des">
@@ -40,11 +40,54 @@
       </div>
       <form action="/cart" method="post">
         <input type="hidden" name="productId" value="<%= product._id %>">
-        <button type="submit" class="btn btn-primary">Add to Cart</button>
+        <button type="submit" class="btn btn-primary normal">Add to Cart</button>
       </form>
     </div>
     <% }) %>
   </div>
 </section>
+
+<section id="banner" class="section-m1">
+  <h2>Upto <span>70% Off</span> - All t-Shirts & Accessories</h2>
+</section>
+
+<section class="product1 section-p1">
+  <h2>New Arrivals</h2>
+  <p>Summer Collection New Mordern Design</p>
+  <div class="pro-container">
+    <% newprod.forEach(product => { %>
+    <div class="pro">
+      <img src="<%= product.image %>">
+      <div class="des">
+        <span><%= product.brand %></span>
+        <h5><%= product.name %></h5>
+        <h4><%= product.price %></h4>
+      </div>
+      <form action="/cart" method="post">
+        <input type="hidden" name="productId" value="<%= product._id %>">
+        <button type="submit" class="btn btn-primary normal">Add to Cart</button>
+      </form>
+    </div>
+    <% }) %>
+  </div>
+</section>
+
+<section id="banner2">
+  <div class="banner-box">
+    <a href="/shop"><h2>Seasonal Sale</h2></a>
+    <h3>Winter Collection -50% OFF</h3>
+  </div>
+  <div class="banner-box banner-box2">
+    <%const d = new Date();%>
+    <%let year = d.getFullYear();%>
+    <a href="/shop"><h2>New Footwear Collection</h2></a>
+    <h3>Spring/Summer <%= year %></h3>
+  </div>
+  <div class="banner-box banner-box3">
+    <a href="/shop"><h2>T-shirts</h2></a>
+    <h3>New trendy prints</h3>
+  </div>
+</section>
+
 
   <%- include('partials/footer') %>

@@ -11,3 +11,7 @@ export async function getAllProducts() {
 export async function getFeaturedProducts() {
     return await productModel.find({featured: true});
 }
+
+export async function getNewProducts() {
+    return await productModel.find({new: true});
+}

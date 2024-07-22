@@ -8,7 +8,8 @@ const productSchema = new mongoose.Schema({
   stock: Number,
   image: String,
   domain: String,
-  featured: Boolean
+  featured: Boolean,
+  new: Boolean
 });
 
 const productModel = mongoose.model("products", productSchema);

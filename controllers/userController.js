@@ -1,7 +1,7 @@
 import { registerUser } from "../services/userServices.js";
 import { ApiError } from "../errors/ApiError.js";
 import domains from "../const.js"
-import { findProductsByDomain, getFeaturedProducts } from "../repositories/productRepositories.js";
+import { findProductsByDomain, getFeaturedProducts, getNewProducts } from "../repositories/productRepositories.js";
 
 export const renderHome = (req, res) => {
   res.render("home.ejs");
@@ -16,19 +16,24 @@ export const renderRegister = (req, res) => {
 };
 
 export const renderEcom = async (req, res) => {
+  try{
     if (req.isAuthenticated()) {
       /*
       const constants={}
       for(let i=0; i<domains.length; i++) {
-        constants[`const${i}`]=await findProductsByDomain(domains[i]);
+        constants[`${domains[i]}`]=await findProductsByDomain(domains[i]);
       }
       */
-      const products= await getFeaturedProducts();
+      const featured= await getFeaturedProducts();
+      const newprod= await getNewProducts();
       res.render('ecommerce.ejs',{
-        products:products
+        featured:featured,
+        newprod:newprod
       });
     } else {
       res.redirect('/login');
+    }} catch(err){
+      next(ApiError.badRequest(err.message));
     }
   };
 
