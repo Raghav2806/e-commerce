@@ -1,5 +1,9 @@
 import productModel from "../models/productModel.js";
 
+export async function findFirstProducts(domain) {
+    return await productModel.find({domain: domain}).limit(4).exec();
+}
+
 export async function findProductsByDomain(domain) {
     return await productModel.find({domain: domain});
 }

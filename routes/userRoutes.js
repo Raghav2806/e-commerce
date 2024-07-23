@@ -6,6 +6,8 @@ import {
   renderRegister,
   renderEcom,
   register,
+  renderShop,
+  viewAll
 } from '../controllers/userController.js';
 
 export const router = express.Router();
@@ -42,3 +44,7 @@ router.post(
 );
 
 router.post('/register', register);
+
+router.get('/shop', renderShop);
+
+router.get('/shop/:category', viewAll);

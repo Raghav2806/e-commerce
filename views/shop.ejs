@@ -1,0 +1,45 @@
+<%- include('partials/header') %>
+
+<section id="shop-header">
+  <h2>#stayhome</h2>
+  <p>Save more with coupons and upto 70% off!</p>
+</section>
+
+<% for (const categoryName in constants) { %> <% const categoryItems =
+constants[categoryName]; %>
+<section class="product1 section-p1">
+  <h2><%= categoryName %></h2>
+  <p>Summer Collection New Modern Design</p>
+  <div class="pro-container">
+    <% categoryItems.forEach(product => { %>
+    <div class="pro">
+      <img src="<%= product.image %>" />
+      <div class="des">
+        <span><%= product.brand %></span>
+        <h5><%= product.name %></h5>
+        <h4><%= product.price %></h4>
+      </div>
+      <form action="/cart" method="post">
+        <input type="hidden" name="productId" value="<%= product._id %>" />
+        <button type="submit" class="btn normal">
+          Add to Cart
+        </button>
+      </form>
+    </div>
+    <% }) %>
+  </div>
+  <% if(isCategoryPage) {%>
+  <form action="/shop">
+    <button id="viewAll" type="submit" class="btn abnormal">
+      <i class="fa-solid fa-arrow-left fa-xs"></i> Go Back 
+    </button>
+  </form>
+  <% } else{ %>
+  <form action="/shop/<%= categoryName %>">
+    <button id="viewAll" type="submit" class="btn abnormal">
+      View All <i class="fa-solid fa-arrow-right fa-xs"></i>
+    </button>
+  </form>
+  <% } %>
+</section>
+<% } %> <%- include('partials/footer') %>
