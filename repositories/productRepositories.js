@@ -8,6 +8,10 @@ export async function findProductsByDomain(domain) {
     return await productModel.find({domain: domain});
 }
 
+export async function findProductById(id) {
+    return await productModel.findOne({_id: id});
+}
+
 export async function getAllProducts() {
     return await productModel.find();
 }

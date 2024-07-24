@@ -1,6 +1,6 @@
 <%- include('partials/header') %>
 
-<section id="shop-header">
+<section id="page-header" class="shop-header">
   <h2>#stayhome</h2>
   <p>Save more with coupons and upto 70% off!</p>
 </section>
@@ -17,9 +17,9 @@ constants[categoryName]; %>
       <div class="des">
         <span><%= product.brand %></span>
         <h5><%= product.name %></h5>
-        <h4><%= product.price %></h4>
+        <h4>$<%= product.price %></h4>
       </div>
-      <form action="/cart" method="post">
+      <form class="add-to-cart-form" action="/cart" method="post">
         <input type="hidden" name="productId" value="<%= product._id %>" />
         <button type="submit" class="btn normal">
           Add to Cart

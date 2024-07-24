@@ -1,4 +1,10 @@
-import { registerUser } from "../services/userServices.js";
+import { 
+  registerUser,
+  addingToCart,
+  removeProdFromCart,
+  increaseProdQuant,
+  decreaseProdQuant 
+} from "../services/userServices.js";
 import { ApiError } from "../errors/ApiError.js";
 import domains from "../const.js";
 import {
@@ -7,6 +13,7 @@ import {
   getFeaturedProducts,
   getNewProducts,
 } from "../repositories/productRepositories.js";
+import cartModel from "../models/cartModel.js";
 
 export const renderHome = (req, res) => {
   res.render("home.ejs");
@@ -20,12 +27,9 @@ export const renderRegister = (req, res) => {
   res.render("register.ejs");
 };
 
-export const renderEcom = async (req, res) => {
+export async function renderEcom (req, res) {
   try {
     if (req.isAuthenticated()) {
-      /*
-      
-      */
       const featured = await getFeaturedProducts();
       const newprod = await getNewProducts();
       res.render("ecommerce.ejs", {
@@ -67,10 +71,10 @@ export async function renderShop(req, res) {
       }
       res.render("shop.ejs", {
         constants: constants,
-        isCategoryPage: false
+        isCategoryPage: false,
       });
     } else {
-      res.redirect("/");
+      res.redirect("/login");
     }
   } catch (err) {
     next(ApiError.badRequest(err.message));
@@ -85,10 +89,82 @@ export async function viewAll(req, res, next) {
       constants[`${category}`] = await findProductsByDomain(category);
       res.render("shop.ejs", {
         constants: constants,
-        isCategoryPage: true
+        isCategoryPage: true,
       });
     } else {
-      res.redirect("/");
+      res.redirect("/login");
+    }
+  } catch (err) {
+    next(ApiError.badRequest(err.message));
+  }
+}
+
+export async function addToCart(req, res, next) {
+  try {
+    if (req.isAuthenticated()) {
+      const userId = req.session.passport.user._id;
+      await addingToCart(req.body,userId)
+      res.json({success: true, message: "Item added to cart"});
+    } else {
+      res.redirect("/login");
+    }
+  } catch (err) {
+    next(ApiError.badRequest(err.message));
+  }
+}
+
+export async function renderCart(req, res, next)  {
+  try {
+    if (req.isAuthenticated()) {
+      const userId = req.session.passport.user._id;
+    const cart = await cartModel.findOne({ userId }).populate('items.productId');
+    
+    if (cart) {
+      res.render('cart.ejs', { cartItems: cart.items, totalPrice: cart.totalPrice, userId: cart.userId });
+    } else {
+      res.render('cart.ejs', { cartItems: [], totalPrice: 0 });
+    }
+    } else {
+      res.redirect("/login");
+    }
+  } catch (err) {
+    next(ApiError.badRequest(err.message));
+  }
+};
+
+export async function removeProduct(req, res, next) {
+  try{
+    if(req.isAuthenticated()) {
+      await removeProdFromCart(req.body);
+      res.redirect("/cart")
+    } else {
+      res.redirect("/login")
+    }
+  } catch (err) {
+    next(ApiError.badRequest(err.message));
+  }
+}
+
+export async function increaseQuant(req, res, next) {
+  try{
+    if(req.isAuthenticated()) {
+      await increaseProdQuant(req.body);
+      res.redirect("/cart")
+    } else {
+      res.redirect("/login")
+    }
+  } catch (err) {
+    next(ApiError.badRequest(err.message));
+  }
+}
+
+export async function decreaseQuant(req, res, next) {
+  try{
+    if(req.isAuthenticated()) {
+      await decreaseProdQuant(req.body);
+      res.redirect("/cart")
+    } else {
+      res.redirect("/login")
     }
   } catch (err) {
     next(ApiError.badRequest(err.message));

@@ -7,8 +7,14 @@ import {
   renderEcom,
   register,
   renderShop,
-  viewAll
+  viewAll,
+  addToCart,
+  renderCart,
+  removeProduct,
+  increaseQuant,
+  decreaseQuant
 } from '../controllers/userController.js';
+import cartModel from "../models/cartModel.js";
 
 export const router = express.Router();
 
@@ -48,3 +54,13 @@ router.post('/register', register);
 router.get('/shop', renderShop);
 
 router.get('/shop/:category', viewAll);
+
+router.post('/cart', addToCart);
+
+router.get('/cart', renderCart);
+
+router.post('/cart/remove', removeProduct);
+
+router.post('/cart/increase', increaseQuant);
+
+router.post('/cart/decrease', decreaseQuant);

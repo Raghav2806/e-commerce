@@ -1,0 +1,85 @@
+<%- include('partials/header') %>
+
+<section id="page-header" class="cart-header">
+    <h2>#let's_talk</h2>
+    <p>LEAVE A MESSAGE. We love to hear from you.</p>
+  </section>
+
+<section id="cart" class="section-p1">
+    <table width="100%">
+        <thead>
+            <tr>
+                <td>Remove</td>
+                <td>Image</td>
+                <td>Product</td>
+                <td>Price</td>
+                <td>Quantity</td>
+                <td>Subtotal</td>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (cartItems.length > 0) { %>
+                <% let totalPrice = 0; %>
+                <% cartItems.forEach(item => { %>
+                <% totalPrice += item.price * item.quantity; %>
+                <tr>
+                    <td>
+                        <form action="/cart/remove" method="post" style="display:inline;">
+                            <input type="hidden" name="userId" value="<%= userId %>">
+                            <input type="hidden" name="productId" value="<%= item.productId._id %>">
+                            <button type="submit" style="border:none; background:none;">
+                              <i class="fa-solid fa-circle-xmark"></i>
+                            </button>
+                          </form>
+                    </td>
+                    <td><img src="<%= item.productId.image %>" alt="<%= item.productId.name %>"></td>
+                    <td><%= item.productId.name %></td>
+                    <td>$<%= item.price %></td>
+                    <td>
+                        <form action="/cart/decrease" method="post" style="display:inline;">
+                            <input type="hidden" name="userId" value="<%= userId %>">
+                            <input type="hidden" name="productId" value="<%= item.productId._id %>">
+                            <button type="submit" style="border:none; background:none;">
+                                <i class="fa-solid fa-minus fa-xs"></i>
+                            </button>
+                          </form>
+                          <%= item.quantity %>
+                          <form action="/cart/increase" method="post" style="display:inline;">
+                            <input type="hidden" name="userId" value="<%= userId %>">
+                            <input type="hidden" name="productId" value="<%= item.productId._id %>">
+                            <button type="submit" style="border:none; background:none;">
+                                <i class="fa-solid fa-plus fa-xs"></i>
+                            </button>
+                          </form></td>
+                    <td>$<%= item.price * item.quantity %></td>
+                </tr>
+                <% }) %>
+        </tbody>
+    </table>
+</section>
+<section id="cart-add" class="section-p1">
+    <div id="space"></div>
+    <div id="subtotal">
+        <h3>Cart Totals</h3>
+        <table>
+            <tr>
+                <td>Cart Subtotal</td>
+                <td>$<%= totalPrice %></td>
+            </tr>
+            <tr>
+                <td>Shipping</td>
+                <td>Free</td>
+            </tr>
+            <tr><strong>Total</strong></tr>
+            <tr><strong>$<%= totalPrice %></strong></tr>
+        </table>
+        <form action="/checkout" method="post">
+            <button type="submit" class="btn normal">Checkout</button>
+        </form>
+        <% } else { %>
+            <p>Your cart is empty.</p>
+          <% } %>  
+    </div>
+</section>
+
+<%- include('partials/footer') %>
