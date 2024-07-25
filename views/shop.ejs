@@ -5,6 +5,24 @@
   <p>Save more with coupons and upto 70% off!</p>
 </section>
 
+<% if (isCategoryPage) { %>
+  <section class="filter section-p1">
+    <form id="brand-filter-form" action="/shop/<%= category %>" method="get">
+      <label for="brands">Filter by Brands:</label>
+      <div id="brands">
+        <% brands.forEach(brand => { %>
+        <div class="brand-checkbox form-check">
+          <input class="form-check-input" type="checkbox" name="brands" value="<%= brand %>"
+            <%= selectedBrands.includes(brand) ? 'checked' : '' %> />
+          <label class="form-check-label" for="<%= brand %>"><%= brand %></label>
+        </div>
+        <% }) %>
+      </div>
+      <button type="submit" class="btn normal">Filter</button>
+    </form>
+  </section>
+  <% } %>
+
 <% for (const categoryName in constants) { %> <% const categoryItems =
 constants[categoryName]; %>
 <section class="product1 section-p1">

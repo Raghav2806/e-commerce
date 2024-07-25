@@ -23,3 +23,11 @@ export async function getFeaturedProducts() {
 export async function getNewProducts() {
     return await productModel.find({new: true});
 }
+
+export async function findProductsByDomainAndBrands(domain,brands) {
+    return await productModel.find({domain:domain, brand:{$in:brands}}).exec();
+}
+
+export async function getDistinctBrands(domain) {
+    return await productModel.distinct('brand',{domain:domain}).exec();
+}

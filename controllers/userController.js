@@ -10,8 +10,10 @@ import domains from "../const.js";
 import {
   findFirstProducts,
   findProductsByDomain,
+  getDistinctBrands,
   getFeaturedProducts,
   getNewProducts,
+  findProductsByDomainAndBrands
 } from "../repositories/productRepositories.js";
 import cartModel from "../models/cartModel.js";
 
@@ -84,12 +86,23 @@ export async function renderShop(req, res) {
 export async function viewAll(req, res, next) {
   try {
     if (req.isAuthenticated()) {
-      const category = req.params.category;
+      const category = req.params.category; //get request: req.query, post request req.body
+      let selectedBrands = req.query.brands || []; //Used to retrieve query parameters from the URL. If the URL is /shop/category?brands=BrandA&brands=BrandB, the query parameters brands can be accessed via req.query.brands.
       const constants = {};
-      constants[`${category}`] = await findProductsByDomain(category);
+      const brands=await getDistinctBrands(category);
+
+      if (selectedBrands.length > 0) {
+        constants[`${category}`] = await findProductsByDomainAndBrands(category, selectedBrands);
+      } else {
+        constants[`${category}`] = await findProductsByDomain(category);
+      }
+
       res.render("shop.ejs", {
         constants: constants,
         isCategoryPage: true,
+        category:category,
+        selectedBrands: selectedBrands,
+        brands: brands
       });
     } else {
       res.redirect("/login");
