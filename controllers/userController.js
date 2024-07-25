@@ -67,12 +67,12 @@ export async function register(req, res, next) {
 export async function renderShop(req, res) {
   try {
     if (req.isAuthenticated()) {
-      const constants = {};
+      const categories = {};
       for (let i = 0; i < domains.length; i++) {
-        constants[`${domains[i]}`] = await findFirstProducts(domains[i]);
+        categories[`${domains[i]}`] = await findFirstProducts(domains[i]);
       }
       res.render("shop.ejs", {
-        constants: constants,
+        categories: categories,
         isCategoryPage: false,
       });
     } else {
@@ -88,21 +88,23 @@ export async function viewAll(req, res, next) {
     if (req.isAuthenticated()) {
       const category = req.params.category; //get request: req.query, post request req.body
       let selectedBrands = req.query.brands || []; //Used to retrieve query parameters from the URL. If the URL is /shop/category?brands=BrandA&brands=BrandB, the query parameters brands can be accessed via req.query.brands.
-      const constants = {};
+      const categories = {};
       const brands=await getDistinctBrands(category);
-
-      if (selectedBrands.length > 0) {
-        constants[`${category}`] = await findProductsByDomainAndBrands(category, selectedBrands);
+      let sortByPrice = req.query.asc==='asc' || req.query.des==='des';
+      const sorting = req.query.asc || req.query.des || 0;
+      if (selectedBrands.length > 0 || sortByPrice) {
+        categories[`${category}`] = await findProductsByDomainAndBrands(category, selectedBrands, sorting);
       } else {
-        constants[`${category}`] = await findProductsByDomain(category);
+        categories[`${category}`] = await findProductsByDomain(category);
       }
 
       res.render("shop.ejs", {
-        constants: constants,
+        categories: categories,
         isCategoryPage: true,
         category:category,
         selectedBrands: selectedBrands,
-        brands: brands
+        brands: brands,
+        sorting: sorting
       });
     } else {
       res.redirect("/login");

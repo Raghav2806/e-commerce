@@ -4,7 +4,7 @@ export async function findFirstProducts(domain) {
     return await productModel.find({domain: domain}).limit(4).exec();
 }
 
-export async function findProductsByDomain(domain) {
+export async function findProductsByDomain(domain,) {
     return await productModel.find({domain: domain});
 }
 
@@ -24,8 +24,20 @@ export async function getNewProducts() {
     return await productModel.find({new: true});
 }
 
-export async function findProductsByDomainAndBrands(domain,brands) {
-    return await productModel.find({domain:domain, brand:{$in:brands}}).exec();
+export async function findProductsByDomainAndBrands(domain,brands,sorting) {
+    let query = {domain:domain};
+
+    if(brands.length>0) {
+        query.brand = {$in: brands}
+    }
+    let sort = {}
+    if(sorting == 'asc'){
+        sort.price=1;
+    } else if(sorting == 'des'){
+        sort.price=-1;
+    }
+    return await productModel.find(query).sort(sort);
+    //return await productModel.find({domain:domain, brand:{$in:brands}}).sort(sort).exec();
 }
 
 export async function getDistinctBrands(domain) {

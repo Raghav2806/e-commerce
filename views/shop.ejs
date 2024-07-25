@@ -6,8 +6,9 @@
 </section>
 
 <% if (isCategoryPage) { %>
-  <section class="filter section-p1">
-    <form id="brand-filter-form" action="/shop/<%= category %>" method="get">
+  <section class="section-p1">
+    <form class="filter" action="/shop/<%= category %>" method="get">
+      <div class="sort">
       <label for="brands">Filter by Brands:</label>
       <div id="brands">
         <% brands.forEach(brand => { %>
@@ -18,13 +19,26 @@
         </div>
         <% }) %>
       </div>
-      <button type="submit" class="btn normal">Filter</button>
+    </div>
+      <div class="sort">
+        <label>Sort By Price:</label>
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="asc" value="asc" <% if(sorting==='asc') {%>checked<%} %>>
+        <label class="form-check-label" for="flexSwitchCheckDefault">Sort by price (lowest to highest)</label>
+      </div>
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="des" value="des" <% if(sorting==='des') {%>checked<%} %>>
+        <label class="form-check-label" for="flexSwitchCheckDefault">Sort by price (lowest to highest)</label>
+      </div>
+    </div> 
+      <button type="submit" class="btn normal">Apply</button>
+      <a href="/shop/<%= category %>" class="btn abnormal">Clear</a>
     </form>
   </section>
   <% } %>
 
-<% for (const categoryName in constants) { %> <% const categoryItems =
-constants[categoryName]; %>
+<% for (const categoryName in categories) { %> <% const categoryItems =
+categories[categoryName]; %>
 <section class="product1 section-p1">
   <h2><%= categoryName %></h2>
   <p>Summer Collection New Modern Design</p>

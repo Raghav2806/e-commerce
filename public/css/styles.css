@@ -54,28 +54,30 @@ a{
   text-decoration: none;
 }
 
-button.normal{
+.normal{
   background-color: #088178;
   border: 1px solid #088178;
   color: #fff;
   font-weight: 500;
+  margin: 0 12px;
 }
 
-button.normal:hover{
+.normal:hover{
   background-color: #1a1a1a;
   border: 1px solid #1a1a1a;
   color: #fff;
   font-weight: 500;
 }
 
-button.abnormal{
+.abnormal{
   background-color: #E8ECEF;
   border: 1px solid #088178;
   color: #088178;
   font-weight: 500;
+  margin: 0 12px;
 }
 
-button.abnormal:hover{
+.abnormal:hover{
   background-color: #1a1a1a;
   border: 1px solid #1a1a1a;
   color: #fff;
@@ -369,6 +371,32 @@ footer .follow i{
   margin-top: 20px;
 }
 
+.filter{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.sort{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 50%;
+}
+
+#brands{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.brand-checkbox {
+  width: 33%;
+}
+
 /*cart page*/
 .cart-header{
   background-image: url(../images/banner.png);
@@ -463,22 +491,4 @@ footer .follow i{
 
 #subtotal h3{
   padding-bottom: 15px;
-}
-
-#brand-filter-form{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-#brands{
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
-.brand-checkbox {
-  width: 12%;
 }
