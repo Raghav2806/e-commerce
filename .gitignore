@@ -143,4 +143,5 @@ dist
 
 # End of https://www.toptal.com/developers/gitignore/api/node
 
+# Ignore result.json file
 result.json
