@@ -1,0 +1,62 @@
+<%- include('partials/header') %>
+
+<section id="page-header" class="cart-header">
+  <h2>#let's_talk</h2>
+  <p>LEAVE A MESSAGE. We love to hear from you.</p>
+</section>
+
+<% var sno = 1 %>
+<% if(orders.length > 0) {%>
+    <% orders.forEach(order => { %>
+<section id="cart" class="section-p1 section-m1">
+    <h3>Order No.<%= sno %></h3>
+    <% sno+=1 %>
+    <table width="100%">
+      <thead>
+        <tr>
+          <td>S.No</td>
+          <td>Image</td>
+          <td>Product</td>
+          <td>Price</td>
+          <td>Quantity</td>
+          <td>Subtotal</td>
+        </tr>
+      </thead>
+      <tbody>
+        <% var count=1 %>
+        <%order.items.forEach(item => { %> 
+        <tr>
+          <td>
+            <%= count %>.
+          </td>
+          <td>
+            <img
+              src="<%= item.productId.image %>"
+              alt="<%= item.productId.name %>"
+            />
+          </td>
+          <td><%= item.productId.name %></td>
+          <td>$<%= item.price %></td>
+          <td>
+            <%= item.quantity %>
+          </td>
+          <td>$<%= item.price * item.quantity %></td>
+        </tr>
+        <% count+=1 %>
+        <% }) %>
+      </tbody>
+    </table>
+    <p><strong>Order By: </strong><%= order.fname %></p>
+    <p><strong>Ordered On: </strong><%= order.orderDate %></p>
+    <p><strong>Delivery At: </strong><%= order.address %>, <%= order.postal %></p>
+    <p><strong>Total Price: </strong>$<%= order.totalPrice%></p>
+    <hr />
+  </section>
+  <% }) %>
+  <% } else { %>
+    <div class="section-p1">
+    <p>You don't have any orders.</p>
+</div>
+    <% } %>
+  
+<%- include('partials/footer') %>

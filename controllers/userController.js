@@ -20,6 +20,8 @@ import { emptyCart } from "../repositories/cartRepositories.js";
 import cartModel from "../models/cartModel.js";
 import Stripe from 'stripe';
 import * as dotenv from "dotenv";
+import { addOrder } from "../repositories/orderRepositories.js";
+import orderModel from "../models/ordersModel.js";
 dotenv.config();
 
 export const renderHome = (req, res) => {
@@ -142,7 +144,7 @@ export async function renderCart(req, res, next)  {
     if (cart) {
       res.render('cart.ejs', { cartItems: cart.items, totalPrice: cart.totalPrice, userId: cart.userId });
     } else {
-      res.render('cart.ejs', { cartItems: [], totalPrice: 0, userId: cart.userId });
+      res.render('cart.ejs', { cartItems: [], totalPrice: 0, userId: userId });
     }
     } else {
       res.redirect("/loginPage");
@@ -204,11 +206,13 @@ export async function renderSuccess(req, res, next) {
   try {
     const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY);
     const userId = req.session.passport.user._id;
-    emptyCart(userId);
-    const result = Promise.all([ //multiple await together
+    const cart = await cartModel.findOne({ userId }).populate('items.productId');
+    const result = await Promise.all([ //multiple await together
       stripe.checkout.sessions.retrieve(req.query.session_id,{expand: ['payment_intent.payment_method']}),
       stripe.checkout.sessions.listLineItems(req.query.session_id)
     ])
+    await addOrder(cart,result[0]);
+    await emptyCart(userId);
     res.render("success.ejs",{
       final:result
     });
@@ -216,3 +220,21 @@ export async function renderSuccess(req, res, next) {
     next(ApiError.badRequest(err.message));
   }
 }
+
+export async function renderOrders(req, res, next)  {
+  try {
+    if (req.isAuthenticated()) {
+    const userId = req.session.passport.user._id;
+    const allOrders = await orderModel.findOne({ userId }).populate('orders.items.productId');
+    if (allOrders) {
+      res.render('orders.ejs', { orders: allOrders.orders, userId: allOrders.userId });
+    } else {
+      res.render('orders.ejs', { orders: [], userId: userId });
+    }
+    } else {
+      res.redirect("/loginPage");
+    }
+  } catch (err) {
+    next(ApiError.badRequest(err.message));
+  }
+};
