@@ -3,7 +3,8 @@ import {
   addingToCart,
   removeProdFromCart,
   increaseProdQuant,
-  decreaseProdQuant 
+  decreaseProdQuant, 
+  checkingOut
 } from "../services/userServices.js";
 import { ApiError } from "../errors/ApiError.js";
 import domains from "../const.js";
@@ -15,7 +16,11 @@ import {
   getNewProducts,
   findProductsByDomainAndBrands
 } from "../repositories/productRepositories.js";
+import { emptyCart } from "../repositories/cartRepositories.js";
 import cartModel from "../models/cartModel.js";
+import Stripe from 'stripe';
+import * as dotenv from "dotenv";
+dotenv.config();
 
 export const renderHome = (req, res) => {
   res.render("home.ejs");
@@ -39,7 +44,7 @@ export async function renderEcom (req, res) {
         newprod: newprod,
       });
     } else {
-      res.redirect("/login");
+      res.redirect("/loginPage");
     }
   } catch (err) {
     next(ApiError.badRequest(err.message));
@@ -55,7 +60,7 @@ export async function register(req, res, next) {
     });
   } catch (err) {
     if ((err.message = "User already exists")) {
-      res.redirect("/login");
+      res.redirect("/loginPage");
       next(ApiError.badRequest(err.message));
     } else {
       res.redirect("/register");
@@ -76,7 +81,7 @@ export async function renderShop(req, res) {
         isCategoryPage: false,
       });
     } else {
-      res.redirect("/login");
+      res.redirect("/loginPage");
     }
   } catch (err) {
     next(ApiError.badRequest(err.message));
@@ -107,7 +112,7 @@ export async function viewAll(req, res, next) {
         sorting: sorting
       });
     } else {
-      res.redirect("/login");
+      res.redirect("/loginPage");
     }
   } catch (err) {
     next(ApiError.badRequest(err.message));
@@ -121,7 +126,7 @@ export async function addToCart(req, res, next) {
       await addingToCart(req.body,userId)
       res.json({success: true, message: "Item added to cart"});
     } else {
-      res.redirect("/login");
+      res.redirect("/loginPage");
     }
   } catch (err) {
     next(ApiError.badRequest(err.message));
@@ -137,10 +142,10 @@ export async function renderCart(req, res, next)  {
     if (cart) {
       res.render('cart.ejs', { cartItems: cart.items, totalPrice: cart.totalPrice, userId: cart.userId });
     } else {
-      res.render('cart.ejs', { cartItems: [], totalPrice: 0 });
+      res.render('cart.ejs', { cartItems: [], totalPrice: 0, userId: cart.userId });
     }
     } else {
-      res.redirect("/login");
+      res.redirect("/loginPage");
     }
   } catch (err) {
     next(ApiError.badRequest(err.message));
@@ -153,7 +158,7 @@ export async function removeProduct(req, res, next) {
       await removeProdFromCart(req.body);
       res.redirect("/cart")
     } else {
-      res.redirect("/login")
+      res.redirect("/loginPage")
     }
   } catch (err) {
     next(ApiError.badRequest(err.message));
@@ -166,7 +171,7 @@ export async function increaseQuant(req, res, next) {
       await increaseProdQuant(req.body);
       res.redirect("/cart")
     } else {
-      res.redirect("/login")
+      res.redirect("/loginPage")
     }
   } catch (err) {
     next(ApiError.badRequest(err.message));
@@ -179,8 +184,34 @@ export async function decreaseQuant(req, res, next) {
       await decreaseProdQuant(req.body);
       res.redirect("/cart")
     } else {
-      res.redirect("/login")
+      res.redirect("/loginPage")
     }
+  } catch (err) {
+    next(ApiError.badRequest(err.message));
+  }
+}
+
+export async function checkout(req, res, next) {
+  try{
+    const session= await checkingOut(req.body)
+    res.redirect(session.url)
+  } catch (err) {
+    next(ApiError.badRequest(err.message));
+  }
+}
+
+export async function renderSuccess(req, res, next) {
+  try {
+    const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY);
+    const userId = req.session.passport.user._id;
+    emptyCart(userId);
+    const result = Promise.all([ //multiple await together
+      stripe.checkout.sessions.retrieve(req.query.session_id,{expand: ['payment_intent.payment_method']}),
+      stripe.checkout.sessions.listLineItems(req.query.session_id)
+    ])
+    res.render("success.ejs",{
+      final:result
+    });
   } catch (err) {
     next(ApiError.badRequest(err.message));
   }

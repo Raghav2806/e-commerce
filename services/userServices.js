@@ -9,7 +9,10 @@ import {
   addProductToUserCart, 
   updateCartTotal, 
   increaseQuantity, 
-  decreaseQuantity } from "../repositories/cartRepositories.js";
+  decreaseQuantity,
+  emptyCart
+} from "../repositories/cartRepositories.js";
+import Stripe from 'stripe';
 import * as dotenv from "dotenv";
 import cartModel from "../models/cartModel.js";
 dotenv.config();
@@ -78,4 +81,30 @@ export async function decreaseProdQuant(cartData) {
   } catch (err) {
     throw new Error(err);
   }
+}
+
+export async function checkingOut(userData) {
+  const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY);
+    const userId = userData.userId;
+    const cart = await cartModel.findOne({ userId }).populate('items.productId');
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      shipping_address_collection: {
+        allowed_countries: ['US','IN']
+      },
+      line_items: cart.items.map(item => ({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: item.productId.name,
+            images: [item.productId.image],
+          },
+          unit_amount: item.productId.price * 100, // Stripe expects the amount in cents
+        },
+        quantity: item.quantity,
+      })),
+      success_url: `${process.env.SERVER_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.SERVER_URL}/cancel`,
+    })
+    return session;
 }

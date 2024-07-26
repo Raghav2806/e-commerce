@@ -63,3 +63,10 @@ export async function decreaseQuantity(userId,productId){
         throw new Error("Cannot find cart");
     }
 }
+
+export async function emptyCart(userId) {
+  const cart = await cartModel.findOne({userId});
+  cart.items = [];
+  await cart.save();
+  await updateCartTotal(userId);
+}

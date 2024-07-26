@@ -12,9 +12,10 @@ import {
   renderCart,
   removeProduct,
   increaseQuant,
-  decreaseQuant
+  decreaseQuant,
+  checkout,
+  renderSuccess
 } from '../controllers/userController.js';
-import cartModel from "../models/cartModel.js";
 
 export const router = express.Router();
 
@@ -64,3 +65,11 @@ router.post('/cart/remove', removeProduct);
 router.post('/cart/increase', increaseQuant);
 
 router.post('/cart/decrease', decreaseQuant);
+
+router.post('/checkout', checkout);
+
+router.get('/success', renderSuccess);
+
+router.get('/cancel', (req, res) => {
+  res.render('cancel.ejs'); // Render a cancel page or do additional logic
+});
