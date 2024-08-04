@@ -492,3 +492,8 @@ footer .follow i{
 #subtotal h3{
   padding-bottom: 15px;
 }
+
+.quantity{
+  margin: 0 6px;
+  border-radius: 50%;
+}

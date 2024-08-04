@@ -45,10 +45,8 @@ export async function addingToCart(productData,userId) {
   }
 }
 
-export async function removeProdFromCart(cartData) {
+export async function removeProdFromCart(userId,productId) {
   try{
-    const userId=cartData.userId;
-    const productId=cartData.productId;
     const cart=await cartModel.findOne({userId});
     if(cart){
       // Remove the product from the cart's items array

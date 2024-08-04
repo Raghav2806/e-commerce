@@ -51,12 +51,41 @@ categories[categoryName]; %>
         <h5><%= product.name %></h5>
         <h4>$<%= product.price %></h4>
       </div>
+      <% 
+        const cartItem = cartItems.find(item => item.productId._id.toString() === product._id.toString());
+        if (cartItem) { 
+      %>
+      <form action="/cart/decrease" method="post" style="display: inline">
+            <input type="hidden" name="userId" value="<%= userId %>" />
+            <input
+              type="hidden"
+              name="productId"
+              value="<%= cartItem.productId._id %>"
+            />
+            <button type="submit" class="btn normal quantity" style="padding: 0 6px;">
+              <i class="fa-solid fa-minus fa-xs"></i>
+            </button>
+          </form>
+          <%= cartItem.quantity %>
+          <form action="/cart/increase" method="post" style="display: inline">
+            <input type="hidden" name="userId" value="<%= userId %>" />
+            <input
+              type="hidden"
+              name="productId"
+              value="<%= cartItem.productId._id %>"
+            />
+            <button type="submit" class="btn normal quantity" style="padding: 0 6px;">
+              <i class="fa-solid fa-plus fa-xs"></i>
+            </button>
+          </form>
+          <% } else { %>
       <form class="add-to-cart-form" action="/cart" method="post">
         <input type="hidden" name="productId" value="<%= product._id %>" />
         <button type="submit" class="btn normal">
           Add to Cart
         </button>
       </form>
+      <% } %>
     </div>
     <% }) %>
   </div>

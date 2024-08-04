@@ -1,4 +1,5 @@
 import cartModel from "../models/cartModel.js";
+import { removeProdFromCart } from "../services/userServices.js";
 import { findProductById } from "./productRepositories.js";
 
 export async function updateCartTotal(userId) {
@@ -49,8 +50,8 @@ export async function decreaseQuantity(userId,productId){
     if(cart) {
         const itemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
         if (itemIndex > -1) {
-            if(cart.items[itemIndex].quantity==0){
-                throw new Error("Cannot decrease below zero")
+            if(cart.items[itemIndex].quantity==1){
+                removeProdFromCart(userId,productId);
             } else {
                 cart.items[itemIndex].quantity -= 1; 
             }

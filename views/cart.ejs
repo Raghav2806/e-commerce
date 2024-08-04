@@ -6,6 +6,7 @@
 </section>
 
 <section id="cart" class="section-p1">
+  <% if (cartItems.length > 0) { %>
   <table width="100%">
     <thead>
       <tr>
@@ -18,7 +19,7 @@
       </tr>
     </thead>
     <tbody>
-      <% if (cartItems.length > 0) { %> <% let totalPrice = 0; %> <%
+       <% let totalPrice = 0; %> <%
       cartItems.forEach(item => { %> <% totalPrice += item.price *
       item.quantity; %>
       <tr>

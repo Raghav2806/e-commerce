@@ -41,9 +41,17 @@ export async function renderEcom (req, res) {
     if (req.isAuthenticated()) {
       const featured = await getFeaturedProducts();
       const newprod = await getNewProducts();
+      let cartItems = [];
+      const userId = req.session.passport.user._id;
+      const cart = await cartModel.findOne({ userId }).populate('items.productId');
+      if (cart) {
+        cartItems = cart.items;
+      }
       res.render("ecommerce.ejs", {
         featured: featured,
         newprod: newprod,
+        cartItems: cartItems,
+        userId: cart.userId
       });
     } else {
       res.redirect("/loginPage");
@@ -78,9 +86,17 @@ export async function renderShop(req, res) {
       for (let i = 0; i < domains.length; i++) {
         categories[`${domains[i]}`] = await findFirstProducts(domains[i]);
       }
+      let cartItems = [];
+      const userId = req.session.passport.user._id;
+      const cart = await cartModel.findOne({ userId }).populate('items.productId');
+      if (cart) {
+        cartItems = cart.items;
+      }
       res.render("shop.ejs", {
         categories: categories,
         isCategoryPage: false,
+        cartItems: cartItems,
+        userId: cart.userId
       });
     } else {
       res.redirect("/loginPage");
@@ -104,14 +120,21 @@ export async function viewAll(req, res, next) {
       } else {
         categories[`${category}`] = await findProductsByDomain(category);
       }
-
+      let cartItems = [];
+      const userId = req.session.passport.user._id;
+      const cart = await cartModel.findOne({ userId }).populate('items.productId');
+      if (cart) {
+        cartItems = cart.items;
+      }
       res.render("shop.ejs", {
         categories: categories,
         isCategoryPage: true,
         category:category,
         selectedBrands: selectedBrands,
         brands: brands,
-        sorting: sorting
+        sorting: sorting,
+        cartItems: cartItems,
+        userId: cart.userId
       });
     } else {
       res.redirect("/loginPage");
@@ -126,7 +149,8 @@ export async function addToCart(req, res, next) {
     if (req.isAuthenticated()) {
       const userId = req.session.passport.user._id;
       await addingToCart(req.body,userId)
-      res.json({success: true, message: "Item added to cart"});
+      const referer = req.headers.referer || '/cart';
+      res.redirect(referer);
     } else {
       res.redirect("/loginPage");
     }
@@ -157,7 +181,7 @@ export async function renderCart(req, res, next)  {
 export async function removeProduct(req, res, next) {
   try{
     if(req.isAuthenticated()) {
-      await removeProdFromCart(req.body);
+      await removeProdFromCart(req.body.userId,req.body.productId);
       res.redirect("/cart")
     } else {
       res.redirect("/loginPage")
@@ -171,7 +195,8 @@ export async function increaseQuant(req, res, next) {
   try{
     if(req.isAuthenticated()) {
       await increaseProdQuant(req.body);
-      res.redirect("/cart")
+      const referer = req.headers.referer || '/cart';
+      res.redirect(referer);
     } else {
       res.redirect("/loginPage")
     }
@@ -184,7 +209,8 @@ export async function decreaseQuant(req, res, next) {
   try{
     if(req.isAuthenticated()) {
       await decreaseProdQuant(req.body);
-      res.redirect("/cart")
+      const referer = req.headers.referer || '/cart';
+      res.redirect(referer);
     } else {
       res.redirect("/loginPage")
     }
