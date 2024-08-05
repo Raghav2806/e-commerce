@@ -172,6 +172,16 @@ a{
   left: 20px;
 }
 
+#cart-mark {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef3636;
+  top: -5px;
+  right: 10px;
+}
+
 /*featured*/
 
 .product1{
@@ -494,6 +504,5 @@ footer .follow i{
 }
 
 .quantity{
-  margin: 0 6px;
   border-radius: 50%;
 }

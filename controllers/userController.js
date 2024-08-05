@@ -252,10 +252,11 @@ export async function renderOrders(req, res, next)  {
     if (req.isAuthenticated()) {
     const userId = req.session.passport.user._id;
     const allOrders = await orderModel.findOne({ userId }).populate('orders.items.productId');
+    const cart = await cartModel.findOne({ userId }).populate('items.productId');
     if (allOrders) {
-      res.render('orders.ejs', { orders: allOrders.orders, userId: allOrders.userId });
+      res.render('orders.ejs', { orders: allOrders.orders, userId: allOrders.userId, cartItems: cart.items });
     } else {
-      res.render('orders.ejs', { orders: [], userId: userId });
+      res.render('orders.ejs', { orders: [], userId: userId, cartItems: cart.items });
     }
     } else {
       res.redirect("/loginPage");
