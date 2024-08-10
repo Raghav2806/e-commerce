@@ -32,12 +32,14 @@
   <div class="pro-container">
     <% featured.forEach(product => { %>
     <div class="pro">
+      <a href="/shop/product/<%= product._id %>">
       <img src="<%= product.image %>">
       <div class="des">
         <span><%= product.brand %></span>
         <h5><%= product.name %></h5>
         <h4>$<%= product.price %></h4>
       </div>
+    </a>
       <% 
         const cartItem = cartItems.find(item => item.productId._id.toString() === product._id.toString());
         if (cartItem) { 
@@ -49,7 +51,7 @@
               name="productId"
               value="<%= cartItem.productId._id %>"
             />
-            <button type="submit" class="btn normal quantity" style="padding: 0 6px;">
+            <button type="submit" class="btn" style="padding: 0 6px;">
               <i class="fa-solid fa-minus fa-xs"></i>
             </button>
           </form>
@@ -61,7 +63,7 @@
               name="productId"
               value="<%= cartItem.productId._id %>"
             />
-            <button type="submit" class="btn normal quantity" style="padding: 0 6px;">
+            <button type="submit" class="btn" style="padding: 0 6px;">
               <i class="fa-solid fa-plus fa-xs"></i>
             </button>
           </form>
@@ -88,12 +90,14 @@
   <div class="pro-container">
     <% newprod.forEach(product => { %>
     <div class="pro">
+      <a href="/shop/product/<%= product._id %>">
       <img src="<%= product.image %>">
       <div class="des">
         <span><%= product.brand %></span>
         <h5><%= product.name %></h5>
         <h4>$<%= product.price %></h4>
       </div>
+    </a>
       <% 
         const cartItem = cartItems.find(item => item.productId._id.toString() === product._id.toString());
         if (cartItem) { 
@@ -105,7 +109,7 @@
               name="productId"
               value="<%= cartItem.productId._id %>"
             />
-            <button type="submit" class="btn normal quantity" style="padding: 0 6px;">
+            <button type="submit" class="btn" style="padding: 0 6px;">
               <i class="fa-solid fa-minus fa-xs"></i>
             </button>
           </form>
@@ -117,7 +121,7 @@
               name="productId"
               value="<%= cartItem.productId._id %>"
             />
-            <button type="submit" class="btn normal quantity" style="padding: 0 6px;">
+            <button type="submit" class="btn" style="padding: 0 6px;">
               <i class="fa-solid fa-plus fa-xs"></i>
             </button>
           </form>

@@ -14,7 +14,8 @@ import {
   getDistinctBrands,
   getFeaturedProducts,
   getNewProducts,
-  findProductsByDomainAndBrands
+  findProductsByDomainAndBrands,
+  findProductById
 } from "../repositories/productRepositories.js";
 import { emptyCart } from "../repositories/cartRepositories.js";
 import cartModel from "../models/cartModel.js";
@@ -278,3 +279,23 @@ export async function renderOrders(req, res, next)  {
     next(ApiError.badRequest(err.message));
   }
 };
+
+export async function renderProductPage(req, res, next) {
+  try {
+    if (req.isAuthenticated()) {
+      const id =req.params.id;
+      const userId = req.session.passport.user._id;
+      const cart = await cartModel.findOne({ userId }).populate('items.productId');
+      const product = await findProductById(id);
+      res.render("product.ejs",{
+        product: product,
+        cartItems:cart.items,
+        userId: userId
+      })
+    } else {
+      res.redirect("/loginPage");
+    }
+  } catch (err) {
+    next(ApiError.badRequest(err.message));
+  }
+}

@@ -16,7 +16,8 @@ import {
   checkout,
   renderSuccess,
   renderOrders,
-  renderCancel
+  renderCancel,
+  renderProductPage
 } from '../controllers/userController.js';
 
 export const router = express.Router();
@@ -56,6 +57,8 @@ router.post('/register', register);
 
 router.get('/shop', renderShop);
 
+router.get('/shop/product/:id', renderProductPage);
+
 router.get('/shop/:category', viewAll);
 
 router.post('/cart', addToCart);
@@ -74,4 +77,4 @@ router.get('/success', renderSuccess);
 
 router.get('/cancel', renderCancel);
 
-router.get('/orders', renderOrders)
+router.get('/orders', renderOrders);
