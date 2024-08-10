@@ -240,7 +240,20 @@ export async function renderSuccess(req, res, next) {
     await addOrder(cart,result[0]);
     await emptyCart(userId);
     res.render("success.ejs",{
-      final:result
+      final:result,
+      cartItems:cart.items
+    });
+  } catch (err) {
+    next(ApiError.badRequest(err.message));
+  }
+}
+
+export async function renderCancel(req, res, next) {
+  try {
+    const userId = req.session.passport.user._id;
+    const cart = await cartModel.findOne({ userId }).populate('items.productId');
+    res.render("cancel.ejs",{
+      cartItems:cart.items
     });
   } catch (err) {
     next(ApiError.badRequest(err.message));

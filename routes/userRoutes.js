@@ -15,7 +15,8 @@ import {
   decreaseQuant,
   checkout,
   renderSuccess,
-  renderOrders
+  renderOrders,
+  renderCancel
 } from '../controllers/userController.js';
 
 export const router = express.Router();
@@ -71,8 +72,6 @@ router.post('/checkout', checkout);
 
 router.get('/success', renderSuccess);
 
-router.get('/cancel', (req, res) => {
-  res.render('cancel.ejs'); // Render a cancel page or do additional logic
-});
+router.get('/cancel', renderCancel);
 
 router.get('/orders', renderOrders)
