@@ -37,7 +37,7 @@ export const renderRegister = (req, res) => {
   res.render("register.ejs");
 };
 
-export async function renderEcom (req, res) {
+export async function renderEcom (req, res, next) {
   try {
     if (req.isAuthenticated()) {
       const featured = await getFeaturedProducts();
@@ -46,14 +46,20 @@ export async function renderEcom (req, res) {
       const userId = req.session.passport.user._id;
       const cart = await cartModel.findOne({ userId }).populate('items.productId');
       if (cart) {
-        cartItems = cart.items;
+        res.render("ecommerce.ejs", {
+          featured: featured,
+          newprod: newprod,
+          cartItems: cart.items,
+          userId: cart.userId
+        });
+      } else {
+        res.render("ecommerce.ejs", {
+          featured: featured,
+          newprod: newprod,
+          cartItems: [],
+          userId: userId
+        });
       }
-      res.render("ecommerce.ejs", {
-        featured: featured,
-        newprod: newprod,
-        cartItems: cartItems,
-        userId: cart.userId
-      });
     } else {
       res.redirect("/loginPage");
     }
@@ -294,6 +300,19 @@ export async function renderProductPage(req, res, next) {
       })
     } else {
       res.redirect("/loginPage");
+    }
+  } catch (err) {
+    next(ApiError.badRequest(err.message));
+  }
+}
+
+export async function closeNav(req, res, next) {
+  try {
+    if(req.isAuthenticated()){
+      const referer = req.headers.referer || '/ecommerce';
+      res.redirect(referer);
+    } else {
+      res.redirect("/loginPage")
     }
   } catch (err) {
     next(ApiError.badRequest(err.message));

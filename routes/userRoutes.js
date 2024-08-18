@@ -1,31 +1,13 @@
 import express from 'express';
 import passport from 'passport';
-import {
-  renderHome,
-  renderLogin,
-  renderRegister,
-  renderEcom,
-  register,
-  renderShop,
-  viewAll,
-  addToCart,
-  renderCart,
-  removeProduct,
-  increaseQuant,
-  decreaseQuant,
-  checkout,
-  renderSuccess,
-  renderOrders,
-  renderCancel,
-  renderProductPage
-} from '../controllers/userController.js';
+import * as serv from '../controllers/userController.js';
 
 export const router = express.Router();
 
-router.get('/', renderHome);
-router.get('/loginPage', renderLogin);
-router.get('/register', renderRegister);
-router.get('/ecommerce', renderEcom);
+router.get('/', serv.renderHome);
+router.get('/loginPage', serv.renderLogin);
+router.get('/register', serv.renderRegister);
+router.get('/ecommerce', serv.renderEcom);
 
 router.get('/auth/google', passport.authenticate('google', {
   scope: ['profile', 'email']
@@ -53,28 +35,30 @@ router.post(
   })
 );
 
-router.post('/register', register);
+router.post('/register', serv.register);
 
-router.get('/shop', renderShop);
+router.get('/shop', serv.renderShop);
 
-router.get('/shop/product/:id', renderProductPage);
+router.get('/shop/product/:id', serv.renderProductPage);
 
-router.get('/shop/:category', viewAll);
+router.get('/shop/:category', serv.viewAll);
 
-router.post('/cart', addToCart);
+router.post('/cart', serv.addToCart);
 
-router.get('/cart', renderCart);
+router.get('/cart', serv.renderCart);
 
-router.post('/cart/remove', removeProduct);
+router.post('/cart/remove', serv.removeProduct);
 
-router.post('/cart/increase', increaseQuant);
+router.post('/cart/increase', serv.increaseQuant);
 
-router.post('/cart/decrease', decreaseQuant);
+router.post('/cart/decrease', serv.decreaseQuant);
 
-router.post('/checkout', checkout);
+router.post('/checkout', serv.checkout);
 
-router.get('/success', renderSuccess);
+router.get('/success', serv.renderSuccess);
 
-router.get('/cancel', renderCancel);
+router.get('/cancel', serv.renderCancel);
 
-router.get('/orders', renderOrders);
+router.get('/orders', serv.renderOrders);
+
+router.post('/close', serv.closeNav);

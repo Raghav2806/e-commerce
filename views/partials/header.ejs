@@ -17,11 +17,19 @@
           <li><a id="home-link" class="active" href="/ecommerce">Home</a></li>
           <li><a id="shop-link" href="/shop">Shop</a></li>
           <li><a id="orders-link" href="/orders">My Orders</a></li>
-          <li><a id="cart-link" href="/cart"><i class="fa-solid fa-cart-shopping"></i>
+          <li><a id="lg-bag" href="/cart"><i class="fa-solid fa-cart-shopping"></i>
             <% if(cartItemCount > 0) {%>
               <div id="cart-mark"></div>
             <% } %></a></li>
           <li><a href="/logout">Logout <i class="fa-solid fa-power-off fa-xs"></i></a></li>
+          <form action="/close" method="post" style="display: inline">
+            <button type="submit" id="close" style="border: none; background: none">
+              <i class="fa-solid fa-circle-xmark"></i>
+            </button>
+          </form>
         </ul>
+      </div>
+      <div id="mobile">
+          <i id="bar" class="fas fa-outdent"></i>
       </div>
     </section>
